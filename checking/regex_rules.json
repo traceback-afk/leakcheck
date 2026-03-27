@@ -1,0 +1,9 @@
+{
+    "AWS key": "AKIA[0-9A-Z]{16}",
+	"Stripe key": "sk_live_[0-9a-zA-Z]{24}",
+	"GitHub token": "ghp_[A-Za-z0-9]{36}",
+	"JWT": "\\beyJ[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\b",
+	"Generic API key": "\\b[A-Za-z0-9_\\-]{32,64}\\b",
+	"Base64 secret": "\\b[A-Za-z0-9+/]{40,}={0,2}\\b",
+	"Private key": "-----BEGIN [A-Z ]+PRIVATE KEY-----"
+}
