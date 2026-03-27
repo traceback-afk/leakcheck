@@ -2,26 +2,44 @@ package checking
 
 import (
 	"regexp"
+	"encoding/json"
+	"log"
+	"os"
 )
 
 type Rule struct {
 	Name string
-	Regex *regexp.Regexp
+	Pattern *regexp.Regexp
 }
 
-var rules = []Rule{
-	{"AWS key", regexp.MustCompile(`AKIA[0-9A-Z]{16}`)},
-	{"Stripe key", regexp.MustCompile(`sk_live_[0-9a-zA-Z]{24}`)},
-	{"GitHub token", regexp.MustCompile(`ghp_[A-Za-z0-9]{36}`)},
-	{"JWT", regexp.MustCompile(`\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\b`)},
-	{"Generic API key", regexp.MustCompile(`\b[A-Za-z0-9_\-]{32,64}\b`)},
-	{"Base64 secret", regexp.MustCompile(`\b[A-Za-z0-9+/]{40,}={0,2}\b`)},
-	{"Private key", regexp.MustCompile(`-----BEGIN [A-Z ]+PRIVATE KEY-----`)},
+var rules []Rule
+
+func init(){
+	rules = readRulesFromJson("regex_rules.json")
+}
+
+func readRulesFromJson(path string) []Rule{
+	var rules_map map[string]string
+	content, err := os.ReadFile("regex_rules.json")
+	if err != nil {
+		log.Fatal("Error when opening the file.", err)
+	}
+	err = json.Unmarshal(content, &rules_map)
+
+	var rules_output []Rule
+	for name, pattern := range rules_map {
+		rule := Rule{
+			Name: name,
+			Pattern: regexp.MustCompile(pattern),
+		}
+		rules_output = append(rules_output, rule)
+	}
+	return rules_output
 }
 
 func MatchesRules(input string) (bool, string) {
 	for _, rule := range rules {
-		if rule.Regex.MatchString(input){
+		if rule.Pattern.MatchString(input){
 			return true, rule.Name
 		}
 	}
