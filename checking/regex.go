@@ -12,15 +12,17 @@ type Rule struct {
 	Pattern *regexp.Regexp
 }
 
-var rules []Rule
+var blacklist_rules []Rule
+var whitelist_rules []Rule
 
 func init(){
-	rules = readRulesFromJson("regex_rules.json")
+	blacklist_rules = readRulesFromJson("blacklist_rules.json")
+	whitelist_rules = readRulesFromJson("whitelist_rules.json")
 }
 
 func readRulesFromJson(path string) []Rule{
 	var rules_map map[string]string
-	content, err := os.ReadFile("regex_rules.json")
+	content, err := os.ReadFile(path)
 	if err != nil {
 		log.Fatal("Error when opening the file.", err)
 	}
@@ -38,7 +40,13 @@ func readRulesFromJson(path string) []Rule{
 }
 
 func MatchesRules(input string) (bool, string) {
-	for _, rule := range rules {
+	for _, rule := range whitelist_rules {
+		if rule.Pattern.MatchString(input){
+			return false, "Whitelist:" + rule.Name
+		}
+	}
+
+	for _, rule := range blacklist_rules {
 		if rule.Pattern.MatchString(input){
 			return true, rule.Name
 		}
