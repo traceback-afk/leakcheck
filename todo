@@ -1,0 +1,2 @@
+create an allowlist for regex to allow uuid, hashes like md5, sha1 , timestamps,  common constants
+
