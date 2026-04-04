@@ -7,13 +7,13 @@ import (
 
 var ignoreCommentRegex = regexp.MustCompile(`^leakcheck\s?:\s?ignore$`)
 
-func ContainsIgnoreInlineComment(line string) (bool, error) {
+func ContainsIgnoreComment(line string) bool {
 	_, comment, found := strings.Cut(line, "//")
 	if !found {
-		return false, nil
+		return false
 	}
 	comment = strings.TrimSpace(comment)
 
 	matched := ignoreCommentRegex.MatchString(comment)
-	return matched, nil
+	return matched
 }

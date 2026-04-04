@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestContainsIgnoreInlineComment(t *testing.T){
+func TestContainsIgnoreComment(t *testing.T){
 	lines := []string {
 		"somepassword // leakcheck:ignore",
 		"testpassword // leakcheck: ignore",
@@ -19,10 +19,7 @@ func TestContainsIgnoreInlineComment(t *testing.T){
 
 	for _, line := range lines {
 		t.Run(line, func(t *testing.T) {
-			got, err := ContainsIgnoreInlineComment(line)
-			if err != nil {
-				t.Errorf("error %s", err.Error())
-			}
+			got := ContainsIgnoreComment(line)
 			if got != true{
 				t.Errorf("Inline comment wasn't detected: %s", line)
 			}
